@@ -2,8 +2,7 @@
 
 namespace App\Database;
 
-
-abstract class Database {
+abstract class DB {
     protected string $host;
     protected string $dbName;
     protected string $user;

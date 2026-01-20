@@ -5,7 +5,7 @@ namespace App\Database;
 use mysqli;
 use Exception;
 
-class MySQLi_DB extends Database {
+class MySQLi_DB extends DB {
     private static ?mysqli $instance = null;
 
     public static function conectar(): mysqli {

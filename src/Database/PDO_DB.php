@@ -6,7 +6,7 @@ use PDO;
 use PDOException;
 use Exception;
 
-class PDO_DB extends Database {
+class PDO_DB extends DB {
     private static ?PDO $instance = null;
 
     public static function conectar(): PDO {
