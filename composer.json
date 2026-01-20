@@ -1,0 +1,31 @@
+{
+    "name": "user/php-template",
+    "description": "Template PHP com JWT e Bootstrap Local",
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "firebase/php-jwt": "^6.8",
+        "twbs/bootstrap": "^5.3",
+        "components/jquery": "^3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "files": [
+            "src/Helpers.php"
+        ]
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "App\\Scripts\\Setup::copyAssets"
+        ],
+        "post-update-cmd": [
+            "App\\Scripts\\Setup::copyAssets"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Scripts\\": "scripts/"
+        }
+    }
+}

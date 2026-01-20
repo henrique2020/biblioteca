@@ -1,0 +1,9 @@
+logs/
+public/assets/
+vendor/
+
+.env
+composer.lock
+
+*.sql
+!estrutura.sql
