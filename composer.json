@@ -1,11 +1,12 @@
 {
-    "name": "user/php-template",
+    "name": "henrique2020/php-template",
     "description": "Template PHP com JWT e Bootstrap Local",
     "require": {
         "vlucas/phpdotenv": "^5.5",
         "firebase/php-jwt": "^6.8",
         "twbs/bootstrap": "^5.3",
-        "components/jquery": "^3.7"
+        "components/jquery": "^3.7",
+        "phpmailer/phpmailer": "^7.0"
     },
     "autoload": {
         "psr-4": {
