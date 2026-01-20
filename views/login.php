@@ -67,12 +67,12 @@
             e.preventDefault();
             markInputError(false);
             const email = emailInput.value;
-            const password = passInput.value;
+            const senha = passInput.value;
 
             try {
                 const res = await fetch('/api/login', {
                     method: 'POST',
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ email, senha })
                 });
                 const data = await res.json();
                 if (res.ok) {
