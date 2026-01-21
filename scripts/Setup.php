@@ -3,7 +3,7 @@ namespace App\Scripts;
 
 class Setup {
     public static function copyAssets() {
-        echo "🔄 Configurando assets do Bootstrap e jQuery...\n";
+        echo "🔄 Configurando assets do Bootstrap, jQuery e Bootstrap Icons...\n";
         
         // 1. Copiar Bootstrap
         self::copyBootstrap();
@@ -11,7 +11,10 @@ class Setup {
         // 2. Copiar jQuery
         self::copyJQuery();
         
-        // 3. Remover do vendor
+        // 3. Copiar Bootstrap Icons
+        self::copyBootstrapIcons();
+        
+        // 4. Remover do vendor
         self::removeFromVendor();
         
         echo "✅ Assets configurados com sucesso!\n";
@@ -73,12 +76,32 @@ class Setup {
         echo "✅ jQuery copiado para public/assets/jquery\n";
     }
 
+    private static function copyBootstrapIcons() {
+        echo "\n📦 Copiando Bootstrap Icons...\n";
+        
+        $vendorDir = dirname(__DIR__) . '/vendor/twbs/bootstrap-icons/font';
+        $publicDir = dirname(__DIR__) . '/public/assets/bootstrap-icons';
+
+        if (!is_dir($vendorDir)) {
+            echo "❌ ERRO: Bootstrap Icons não encontrado no vendor.\n";
+            return;
+        }
+
+        if (!is_dir($publicDir)) {
+            mkdir($publicDir, 0777, true);
+        }
+
+        self::recurseCopy($vendorDir, $publicDir);
+        echo "✅ Bootstrap Icons copiado para public/assets/bootstrap-icons\n";
+    }
+
     private static function removeFromVendor() {
         echo "\n🗑️  Removendo assets do vendor...\n";
 
         $packages = [
             dirname(__DIR__) . '/vendor/twbs/bootstrap',
-            dirname(__DIR__) . '/vendor/components/jquery'
+            dirname(__DIR__) . '/vendor/components/jquery',
+            dirname(__DIR__) . '/vendor/twbs/bootstrap-icons'
         ];
 
         // Remove os pacotes

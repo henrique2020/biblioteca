@@ -88,9 +88,9 @@ class Usuario {
 
         if ($usuario && password_verify($senha, $usuario->senha)) {
             $token = JwtService::create(['email' => $usuario->email, 'nome' => $usuario->nome]);
-            json_response(['token' => $token]);
+            json_response(['ok' => true, 'token' => $token, 'redirect' => '/home']);
         } else {
-            json_response(['error' => 'Credenciais inválidas'], 401);
+            json_response(['ok' => false, 'error' => 'Usuário e/ou senha inválidos']);
         }
 
     }

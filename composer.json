@@ -6,7 +6,8 @@
         "firebase/php-jwt": "^6.8",
         "twbs/bootstrap": "^5.3",
         "components/jquery": "^3.7",
-        "phpmailer/phpmailer": "^7.0"
+        "phpmailer/phpmailer": "^7.0",
+        "twbs/bootstrap-icons": "^1.13"
     },
     "autoload": {
         "psr-4": {
