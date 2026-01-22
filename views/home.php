@@ -55,7 +55,7 @@
                             $qtde = count($livro->exemplares);
                             echo "
                                 <tr>
-                                    <td><a href='livro/{$slug}' target='_blank'>{$livro->livro}</a></td>
+                                    <td><a href='livro/{$slug}'>{$livro->livro}</a></td>
                                     <td>{$livro->autor}</td>
                                     <td>{$qtde}</td>
                                 </tr>

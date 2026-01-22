@@ -21,7 +21,13 @@ if ($path === '/home') {
 
 if ($path === '/perfil') {
     header('Content-Type: text/html; charset=UTF-8');
-    require_once view_path('profile.php');
+    require_once view_path('usuario/perfil.php');
+    exit;
+}
+
+if ($path === '/cadastre-se') {
+    header('Content-Type: text/html; charset=UTF-8');
+    require_once view_path('usuario/cadastro.php');
     exit;
 }
 

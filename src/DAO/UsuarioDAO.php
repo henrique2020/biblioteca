@@ -16,7 +16,7 @@ class UsuarioDAO {
 
     private function mapearDadosParaObjeto(array $dados): Usuario {
         return new Usuario(
-            (int) $dados['id'], $dados['nome'], $dados['email'], $dados['senha'], $dados['ativo'], $dados['dataCadastro']
+            (int) $dados['id'], $dados['nome'], $dados['email'], $dados['senha'], $dados['dataNascimento'], $dados['ativo'], $dados['dataCadastro']
         );
     }
 
@@ -24,7 +24,7 @@ class UsuarioDAO {
         try {
             if ($usuario->id) {
                 $sql = "UPDATE usuario 
-                        SET nome = :nome, email = :email, senha = :senha, ativo = :ativo 
+                        SET nome = :nome, email = :email, senha = :senha, dataNascimento = :dataNascimento, ativo = :ativo 
                         WHERE id = :id";
                 
                 $stmt = $this->db->prepare($sql);
@@ -32,18 +32,20 @@ class UsuarioDAO {
                     ':nome' => $usuario->nome,
                     ':email' => $usuario->email,
                     ':senha' => $usuario->senha,
+                    ':dataNascimento' => $usuario->dataNascimento->format('Y-m-d'),
                     ':ativo' => $usuario->ativo,
                     ':id' => $usuario->id
                 ]);
             } else {
-                $sql = "INSERT INTO usuario (nome, email, senha, ativo, dataCadastro) 
-                        VALUES (:nome, :email, :senha, :ativo, :dataCadastro)";
+                $sql = "INSERT INTO usuario (nome, email, senha, dataNascimento, ativo, dataCadastro) 
+                        VALUES (:nome, :email, :senha, :dataNascimento, :ativo, :dataCadastro)";
                 
                 $stmt = $this->db->prepare($sql);
                 $sucesso = $stmt->execute([
                     ':nome' => $usuario->nome,
                     ':email' => $usuario->email,
                     ':senha' => $usuario->senha,
+                    ':dataNascimento' => $usuario->dataNascimento->format('Y-m-d'),
                     ':ativo' => $usuario->ativo,
                     ':dataCadastro' => $usuario->dataCadastro->format('Y-m-d H:i:s')
                 ]);

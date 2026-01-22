@@ -13,9 +13,11 @@ class Usuario {
         private string $nome, 
         private string $email,
         private string $senha,
+        private DateTime|string $dataNascimento,
         private bool $ativo = false,
         private DateTime|string $dataCadastro = 'now'
     ) {
+        $this->dataNascimento = (is_string($dataNascimento)) ? new DateTime($dataNascimento) : $dataNascimento;
         $this->dataCadastro = (is_string($dataCadastro)) ? new DateTime($dataCadastro) : $dataCadastro;
     }
 
@@ -34,15 +36,29 @@ class Usuario {
     private function validaSenhaSegura(): bool {
         $seguranca = validate_password_strength($this->senha);
         if ($seguranca) {
-            json_response(['error' => $seguranca], 400);
+            json_response(['error' => $seguranca]);
             return false;
         }
 
         return true;
     }
 
+    public static function buscarPorID(int $id): ?Usuario {
+        $dao = new UsuarioDAO();
+        return $dao->buscarPorID($id);
+    }
+
+    public static function buscarPorEmail(string $email): ?Usuario {
+        $dao = new UsuarioDAO();
+        return $dao->buscarPorEmail($email);
+    }
+
     public function cadastrar(): int {
         $dao = new UsuarioDAO();
+        if ($dao->buscarPorEmail($this->email)) {
+            json_response(['error' => 'E-mail já cadastrado']);
+            return -1;
+        }
 
         if ($this->validaSenhaSegura()) {
             $this->senha = password_hash($this->senha, PASSWORD_DEFAULT);
@@ -52,7 +68,7 @@ class Usuario {
         return -1;
     }
 
-    public function editar(): int {
+    public function editar(bool $trocaSenha): int {
         $dao = new UsuarioDAO();
 
         if($this->id === null) {
@@ -60,12 +76,24 @@ class Usuario {
             return -1;
         }
 
-        if (!$this->validaSenhaSegura()) {
+        $dbID = $dao->buscarPorID($this->id);
+        $dbEmail = $dao->buscarPorEmail($this->email);
+        if($dbID === null) {
+            json_response(['error' => 'Usuário não encontrado'], 400);
             return -1;
         }
-        
-        $this->senha = password_hash($this->senha, PASSWORD_DEFAULT);
-        return $dao->salvar($this);
+
+        if ($dbEmail !== null && $dbEmail->id !== $this->id) {
+            json_response(['error' => 'Este e-mail já existe']);
+            return -1;
+        }
+
+        if (!$trocaSenha || $this->validaSenhaSegura()) {
+            $this->senha = $trocaSenha ? password_hash($this->senha, PASSWORD_DEFAULT) : $dbID->senha;
+            return $dao->salvar($this);
+        }
+
+        return -1;
     }
 
     public static function dados(): void {
@@ -92,6 +120,5 @@ class Usuario {
         } else {
             json_response(['ok' => false, 'error' => 'Usuário e/ou senha inválidos']);
         }
-
     }
 }

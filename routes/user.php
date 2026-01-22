@@ -10,18 +10,29 @@ switch ("{$method} {$path}") {
         break;
 
     // CRUD de Usuário
-    case 'POST /api/register':
-        $usuario = new Usuario(null, $data['nome'], $data['email'], $data['senha']);
-        $usuario->cadastrar();
+    case 'POST /api/user/create':
+        if($data['senha'] !== $data['confirmacao-senha']) {
+            json_response(['error' => 'As senhas não coincidem']);
+        }
+
+        $nome = "{$data['nome']} {$data['sobrenome']}";
+        $usuario = new Usuario(null, $nome, $data['email'], $data['senha'], $data['data-nascimento']);
+        $id = $usuario->cadastrar();
+
+        if($id > 0){ json_response(['ok' => true]); } 
+        else { json_response(['error' => 'Não foi possível cadastrar o usuário'], 500); }
         break;
 
     case 'GET /api/user':
         Usuario::dados();
         break;
 
-    case 'PUT /api/user':
-        $usuario = new Usuario($data['id'], $data['nome'], $data['email'], $data['senha'], $data['ativo']);
-        $usuario->editar();
+    case 'PUT /api/user/update':
+        $usuario = new Usuario($data['id'], $data['nome'], $data['email'], $data['senha'], $data['data-nascimento']);
+        $alteracoes = $usuario->editar(!empty($data['senha']));
+
+        if($alteracoes > 0){ json_response(['ok' => true]); } 
+        else { json_response(['error' => 'Não foi possível editar o usuário'], 500); }
         break;
 
     default:
