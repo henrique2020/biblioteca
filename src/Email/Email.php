@@ -15,7 +15,7 @@ class Email {
         $this->mail->Host       = $_ENV['EMAIL_HOST'];
         $this->mail->SMTPAuth   = true;
         $this->mail->Username   = $_ENV['EMAIL_USERNAME'];
-        $this->mail->Password   = $_ENV['EMAIL_PASSWORD'];
+        $this->mail->Password   = $_ENV['EMAIL_APP_PASSWORD'] ?? $_ENV['EMAIL_PASSWORD'];
         $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $this->mail->Port       = $_ENV['EMAIL_PORT'] ?? 587;
         $this->mail->CharSet    = 'UTF-8';
@@ -73,8 +73,8 @@ class Email {
             $this->mail->isHTML(true);
             $this->mail->Body = $this->renderizarHtml($template, $atributos);
 
-            //return $this->mail->send();
-            return $this->debug();
+            return $this->mail->send();
+            //return $this->debug();
         } catch (Exception $e) {
             error_log("Erro ao enviar e-mail: {$this->mail->ErrorInfo}");
             return false;
