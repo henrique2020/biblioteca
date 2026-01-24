@@ -8,8 +8,16 @@ switch ("{$method} {$path}") {
     case 'POST /api/login':
         Usuario::login($data['email'], $data['senha']);
         break;
+    
+    case 'POST /api/logout':
+        Usuario::logout();
+        break;
+    
+    // Rotas de usuário
+    case 'GET /api/user':
+        Usuario::dados();
+        break;
 
-    // CRUD de Usuário
     case 'POST /api/user/create':
         if($data['senha'] !== $data['confirmacao-senha']) {
             json_response(['error' => 'As senhas não coincidem']);
@@ -23,10 +31,6 @@ switch ("{$method} {$path}") {
         else { json_response(['error' => 'Não foi possível cadastrar o usuário'], 500); }
         break;
 
-    case 'GET /api/user':
-        Usuario::dados();
-        break;
-
     case 'PUT /api/user/update':
         $usuario = new Usuario($data['id'], $data['nome'], $data['email'], $data['senha'], $data['data-nascimento']);
         $alteracoes = $usuario->editar(!empty($data['senha']));
@@ -36,7 +40,6 @@ switch ("{$method} {$path}") {
         break;
 
     default:
-        http_response_code(404);
-        echo json_encode(['error' => 'Endpoint de usuário não encontrado']);
+        json_response(['error' => 'Endpoint de usuário não encontrado'], 404);
         break;
 }

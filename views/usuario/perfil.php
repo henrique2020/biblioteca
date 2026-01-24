@@ -22,12 +22,12 @@
             <span class="navbar-brand">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Perfil</li>
                     </ol>
                 </nav>
             </span>
-            <button onclick="logout()" class="btn btn-sm btn-danger"><i class="bi bi-box-arrow-right"></i></button>
+            <button onclick="logout()" class="btn btn-sm btn-danger"><i class="bi bi-box-arrow-right"></i> Sair</button>
         </div>
     </nav>
     <div class="container">
@@ -100,7 +100,6 @@
 
     <script>
         const token = localStorage.getItem('token');
-        if (!token) window.location.href = '/login';
 
         function emiteAviso(message, type = 'danger') {
             let div = $('#liveToast');
@@ -171,8 +170,17 @@
         })
 
         function logout() {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
+            $.ajax({
+                url: '/api/logout',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                complete: function() { 
+                    location.reload();
+                }
+            });
         }
 
         $(fn => {

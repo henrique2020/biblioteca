@@ -73,7 +73,6 @@
     <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
         const token = localStorage.getItem('token');
-        if (!token) window.location.href = '/login';
 
         async function loadUser() {
             const res = await fetch('/api/user', {
@@ -88,8 +87,17 @@
         }
 
         function logout() {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
+            $.ajax({
+                url: '/api/logout',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                complete: function() { 
+                    location.reload();
+                }
+            });
         }
 
         function showAlert(msg, type) {

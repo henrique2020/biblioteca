@@ -96,13 +96,20 @@ class Usuario {
         return -1;
     }
 
-    public static function dados(): void {
-        $token = JwtService::getBearerToken();
-        $payload = JwtService::validate($token ?? '');
+    public static function estaLogado(): bool {
+        $token = $_SESSION['token'] ?? JwtService::getBearerToken();
+        $dados = JwtService::validate($token ?? '');
 
-        if (!$payload) {
+        return $dados !== null;
+    }
+
+    public static function dados(): void {
+        if (!self::estaLogado()) {
             json_response(['error' => 'Token inválido ou expirado'], 401);
         }
+
+        $token = $_SESSION['token'] ?? JwtService::getBearerToken();
+        $payload = JwtService::validate($token ?? '');
 
         $dao = new UsuarioDAO();
         $usuario = get_object_vars($dao->buscarPorEmail($payload->email));
@@ -116,9 +123,17 @@ class Usuario {
 
         if ($usuario && password_verify($senha, $usuario->senha)) {
             $token = JwtService::create(['email' => $usuario->email, 'nome' => $usuario->nome]);
-            json_response(['ok' => true, 'token' => $token, 'redirect' => '/home']);
+            $_SESSION['token'] = $token;
+            exec("<script>localStorage.removeItem('token');</script>");
+            json_response(['ok' => true, 'token' => $token, 'redirect' => '/']);
         } else {
             json_response(['ok' => false, 'error' => 'Usuário e/ou senha inválidos']);
         }
+    }
+
+    public static function logout(): void {
+        unset($_SESSION['token']);
+        exec("<script>localStorage.removeItem('token');</script>");
+        json_response(['ok' => true]);
     }
 }

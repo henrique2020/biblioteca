@@ -23,7 +23,6 @@ foreach ($livro->exemplares as $exemplar) {
         </tr>
     ";
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +42,7 @@ foreach ($livro->exemplares as $exemplar) {
                 <h4 class="alert-heading">Erro!</h4>
                 <p><?= $erro ?></p>
                 <hr>
-                <a href="/home" class="btn btn-primary">Voltar para Home</a>
+                <a href="/" class="btn btn-primary">Voltar para Home</a>
             </div>
         <?php } else { ?>
             <!-- Informações do Livro -->
@@ -96,7 +95,7 @@ foreach ($livro->exemplares as $exemplar) {
                 </div>
             </div>
 
-            <a href="/home" class="btn btn-secondary">Voltar</a>
+            <a href="/" class="btn btn-secondary">Voltar</a>
         <?php } ?>
     </div>
 

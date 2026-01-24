@@ -1,46 +1,45 @@
 <?php
+
+use App\Usuario;
+
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 route_log();
 
-// 1. Define o cabeçalho padrão (pode ser sobrescrito nas views)
-header('Content-Type: application/json');
-
-// 2. Roteamento de Frontend
-if ($path === '/' || $path === '/login') {
-    header('Content-Type: text/html; charset=UTF-8');
-    require_once view_path('login.php');
+header('Content-Type: text/html; charset=UTF-8');
+//View Routes
+if ($path === '/') {
+    if(Usuario::estaLogado()) {
+        require_once view_path('home.php');
+    } else {
+        require_once view_path('login.php');
+    }
     exit;
-}
-
-if ($path === '/home') {
-    header('Content-Type: text/html; charset=UTF-8');
-    require_once view_path('home.php');
-    exit;
-}
-
-if ($path === '/perfil') {
-    header('Content-Type: text/html; charset=UTF-8');
-    require_once view_path('usuario/perfil.php');
-    exit;
-}
-
-if ($path === '/cadastre-se') {
-    header('Content-Type: text/html; charset=UTF-8');
+} else if ($path === '/cadastre-se') {
     require_once view_path('usuario/cadastro.php');
     exit;
-}
-
-if ($path === '/catalogo') {
-    header('Content-Type: text/html; charset=UTF-8');
-    require_once view_path('catalogo.php');
+} else if ($path === '/perfil') {
+    require_once view_path('usuario/perfil.php');
     exit;
-}
-
-// Rota dinâmica: /livro/{slug}
-if (str_starts_with($path, '/livro/')) {
-    header('Content-Type: text/html; charset=UTF-8');
+} else if (str_starts_with($path, '/livro/cadastrar')) {
+    require_once view_path('livro/cadastra.php');
+    exit;
+} else if (str_starts_with($path, '/livro/editar/')) {  // Rota dinâmica: /livro/editar/{id}
+    // Extrai o slug da URL
+    $id = str_replace('/livro/editar/', '', $path);
     
+    $id = explode('?', $id)[0];
+    $id = trim($id, '/');
+    
+    // Se não tiver um id, redireciona para home
+    if (empty($id) || !is_numeric($id)) {
+        header('Location: /');
+        exit;
+    }
+    
+    require_once view_path('livro/edita.php');
+    exit;
+} else if (str_starts_with($path, '/livro/')) { // Rota dinâmica: /livro/{slug}  
     // Extrai o slug da URL
     $slug = str_replace('/livro/', '', $path);
     
@@ -49,30 +48,30 @@ if (str_starts_with($path, '/livro/')) {
     
     // Se não tiver um slug, redireciona para home
     if (empty($slug)) {
-        header('Location: /home');
+        header('Location: /');
         exit;
     }
     
-    require_once view_path('livro.php');
+    require_once view_path('livro/consulta.php');
     exit;
 }
 
-// 3. Roteamento de API
-// Se a rota começa com /api/user...
-if (
-    str_starts_with($path, '/api/user')
-    || str_starts_with($path, '/api/login')
-    || str_starts_with($path, '/api/register')
-) {
-    require_once __DIR__ . '/user.php';
-    exit;
+header('Content-Type: application/json');
+//API Routes
+if(str_starts_with($path, '/api/')){
+    $dir = __DIR__ . '/api/';
+    if(str_ends_with($path, '/user')
+        || str_ends_with($path, '/login')
+        || str_ends_with($path, '/register')
+    ){
+        require_once "{$dir}user.php";
+        exit;
+    }
+    else if (str_ends_with($path, '/livro')) {
+        require_once "{$dir}/livro.php";
+        exit;
+    }
 }
 
-if (str_starts_with($path, '/api/livro')) {
-    require_once __DIR__ . '/livro.php';
-    exit;
-}
-
-// 5. Se nada for encontrado
 http_response_code(404);
 echo json_encode(['error' => 'Rota principal não encontrada']);
