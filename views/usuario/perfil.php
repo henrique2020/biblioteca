@@ -1,36 +1,23 @@
+<?php
+$lista_navegacao = [
+    ['nome' => 'Home', 'link' => '/'],
+    ['nome' => 'Perfil', 'link' => '']
+];
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php require_once view_path('layout/head.php'); ?>
     <title>Meu Perfil</title>
-    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/jquery/jquery.min.js"></script>
     <style>
-        nav div { max-height: 40px; }
-        ol.breadcrumb { 
-            & li, a, li::before { color: white !important; }
-        }
         .hiden { display: none; }
     </style>
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-dark bg-primary mb-4">
-        <div class="d-flex justify-content-between px-4 w-100">
-            <span class="navbar-brand">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Perfil</li>
-                    </ol>
-                </nav>
-            </span>
-            <button onclick="logout()" class="btn btn-sm btn-danger"><i class="bi bi-box-arrow-right"></i> Sair</button>
-        </div>
-    </nav>
-    <div class="container">
+    <?php require_once view_path('layout/nav.php'); ?>
+
+    <main class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card shadow-sm">
@@ -87,30 +74,12 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="liveToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body fw-bold" id="mensagem-aviso"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
+    <?php require_once view_path('layout/footer.php'); ?>
 
     <script>
         const token = localStorage.getItem('token');
-
-        function emiteAviso(message, type = 'danger') {
-            let div = $('#liveToast');
-            let body = $('#mensagem-aviso');
-
-            div.attr('class', `toast align-items-center text-white bg-${type} border-0`);
-            body.text(message);
-            
-            let toast = bootstrap.Toast.getOrCreateInstance(div);
-            toast.show();
-        }
 
         async function carregaPerfil() {
             try {
@@ -168,20 +137,6 @@
                 }
             });
         })
-
-        function logout() {
-            $.ajax({
-                url: '/api/logout',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                complete: function() { 
-                    location.reload();
-                }
-            });
-        }
 
         $(fn => {
             carregaPerfil();

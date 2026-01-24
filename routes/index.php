@@ -7,6 +7,16 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 route_log();
 
 header('Content-Type: text/html; charset=UTF-8');
+
+if(!Usuario::estaLogado() 
+    && !str_starts_with($path, '/api/')
+    && $path !== '/'
+    && $path !== '/cadastre-se')
+{
+    header('Location: /');
+    exit;
+}
+
 //View Routes
 if ($path === '/') {
     if(Usuario::estaLogado()) {
@@ -19,6 +29,7 @@ if ($path === '/') {
     require_once view_path('usuario/cadastro.php');
     exit;
 } else if ($path === '/perfil') {
+    Usuario::estaLogado();
     require_once view_path('usuario/perfil.php');
     exit;
 } else if (str_starts_with($path, '/livro/cadastrar')) {
@@ -39,7 +50,8 @@ if ($path === '/') {
     
     require_once view_path('livro/edita.php');
     exit;
-} else if (str_starts_with($path, '/livro/')) { // Rota dinâmica: /livro/{slug}  
+} else if (str_starts_with($path, '/livro/')) { // Rota dinâmica: /livro/{slug}
+    Usuario::estaLogado();
     // Extrai o slug da URL
     $slug = str_replace('/livro/', '', $path);
     
@@ -62,6 +74,7 @@ if(str_starts_with($path, '/api/')){
     $dir = __DIR__ . '/api/';
     if(str_ends_with($path, '/user')
         || str_ends_with($path, '/login')
+        || str_ends_with($path, '/logout')
         || str_ends_with($path, '/register')
     ){
         require_once "{$dir}user.php";

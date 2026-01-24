@@ -125,7 +125,7 @@ class Usuario {
             $token = JwtService::create(['email' => $usuario->email, 'nome' => $usuario->nome]);
             $_SESSION['token'] = $token;
             exec("<script>localStorage.removeItem('token');</script>");
-            json_response(['ok' => true, 'token' => $token, 'redirect' => '/']);
+            json_response(['ok' => true, 'token' => $token, 'redirect' => '']);
         } else {
             json_response(['ok' => false, 'error' => 'Usuário e/ou senha inválidos']);
         }

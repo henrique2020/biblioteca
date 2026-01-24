@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php require_once view_path('layout/head.php'); ?>
     <title>Biblioteca Central</title>
-    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/jquery/jquery.min.js"></script>
     <style>
         body { background-color: #f8f9fa; }
         .login-card { max-width: 90vw; border-radius: 15px; border: none; }
@@ -15,7 +10,7 @@
     </style>
 </head>
 <body class="d-flex align-items-center min-vh-100">
-    <div class="container d-flex justify-content-center">
+    <main class="container d-flex justify-content-center">
         <div class="card login-card shadow-lg p-4">
             <div class="card-body">
                 <form id="cadastro">
@@ -65,32 +60,14 @@
                 </form>
 
                 <hr>
-                <h5>Já tem uma conta? Faça <a href="/login" class="text-danger">login</a></h5>
+                <h5>Já tem uma conta? Faça <a href="/" class="text-danger">login</a></h5>
             </div>
         </div>
-    </div>
+    </main>
 
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="liveToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body fw-bold" id="mensagem-aviso"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
+    <?php require_once view_path('layout/footer.php'); ?>
 
     <script>
-        function emiteAviso(message, type = 'danger') {
-            let div = $('#liveToast');
-            let body = $('#mensagem-aviso');
-
-            div.attr('class', `toast align-items-center text-white bg-${type} border-0`);
-            body.text(message);
-            
-            let toast = bootstrap.Toast.getOrCreateInstance(div);
-            toast.show();
-        }
-
         $('form').on('submit', function(event) {
             event.preventDefault();
             let form = $(this);
@@ -114,7 +91,7 @@
                 success: function(retorno) { 
                     if(retorno.ok){
                         emiteAviso('Cadastro realizado com sucesso! Em instantes você recberá um e-mail para confirmar sua conta', 'success');
-                        setTimeout(() => { window.location.href = '/login'; }, 5 * 1000);
+                        setTimeout(() => { window.location.href = ''; }, 5 * 1000);
                     } else {
                         emiteAviso(retorno.error, 'info');
                     }

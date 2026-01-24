@@ -4,7 +4,7 @@ use App\Biblioteca\Livro;
 
 $livro = Livro::buscarPorSlug($slug, 'completo');
 $erro = !$livro ? "Nenhum livro encontrado através da palavra chave '{$slug}'" : null;
-
+$titulo = $livro ? htmlspecialchars($livro->livro) : 'Livro não encontrado';
 $generos = "";
 foreach ($livro->generos as $genero) {
     $escape = htmlspecialchars($genero->genero);
@@ -23,20 +23,23 @@ foreach ($livro->exemplares as $exemplar) {
         </tr>
     ";
 }
+
+$lista_navegacao = [
+    ['nome' => 'Home', 'link' => '/'],
+    ['nome' => "Livro: {$titulo}", 'link' => '']
+];
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $livro ? htmlspecialchars($livro->livro) : 'Livro não encontrado' ?></title>
-    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
-    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/jquery/jquery.min.js"></script>
+    <?php require_once view_path('layout/head.php'); ?>
+    <title><?= $titulo ?></title>
 </head>
 <body>
-    <div class="container mt-5">
+    <?php require_once view_path('layout/nav.php'); ?>    
+
+    <main class="container mt-5">
         <?php if ($erro) { ?>
             <div class="alert alert-danger" role="alert">
                 <h4 class="alert-heading">Erro!</h4>
@@ -48,7 +51,7 @@ foreach ($livro->exemplares as $exemplar) {
             <!-- Informações do Livro -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <h1 class="card-title center text-center"><?= htmlspecialchars($livro->livro) ?></h1>
+                    <h1 class="card-title center text-center"><?= $titulo ?></h1>
                     <p class="card-text text-muted text-center">
                         <?= htmlspecialchars($livro->autor) ?>
                         <br>
@@ -97,9 +100,12 @@ foreach ($livro->exemplares as $exemplar) {
 
             <a href="/" class="btn btn-secondary">Voltar</a>
         <?php } ?>
-    </div>
+    </main>
 
+    <?php require_once view_path('layout/footer.php'); ?>
     <script>
+        const token = localStorage.getItem('token');
+
         $(function() {
             // Quando um acordeão abre, fecha os outros
             $('#acordeoes .collapse').on('show.bs.collapse', function () {

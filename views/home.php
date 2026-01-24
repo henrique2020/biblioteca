@@ -1,39 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php require_once view_path('layout/head.php'); ?>
     <title>Catálogo</title>
-    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
+    <?php require_once view_path('layout/nav.php'); ?>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/catalogo">Cátalogo</a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" id="userMenu" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i> <span id="userNameDisplay">Carregando...</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/perfil">Meu Perfil</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()">Sair</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mt-5">
+    <main class="container mt-5">
         <h1 class="mb-4">Catálogo de Livros</h1>
 
         <div class="card shadow-sm">
@@ -66,11 +40,10 @@
                 </table>
             </div>
         </div>
-        
-        <p id="emptyMsg" class="text-center text-muted mt-4 d-none">Nenhum chamado encontrado.</p>
-    </div>
+    </main>
 
-    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <?php require_once view_path('layout/footer.php'); ?>
+    
     <script>
         const token = localStorage.getItem('token');
 
@@ -84,27 +57,6 @@
             } else {
                 logout(); // Token inválido
             }
-        }
-
-        function logout() {
-            $.ajax({
-                url: '/api/logout',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                complete: function() { 
-                    location.reload();
-                }
-            });
-        }
-
-        function showAlert(msg, type) {
-            const el = document.getElementById('alertBox');
-            el.className = `alert alert-${type}`;
-            el.textContent = msg;
-            el.classList.remove('d-none');
         }
 
         loadUser();
