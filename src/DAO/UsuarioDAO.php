@@ -2,17 +2,10 @@
 
 namespace App\DAO;
 
-use App\Database\PDO_DB;
 use App\Usuario;
 use Exception;
-use PDO;
 
-class UsuarioDAO {
-    private PDO $db;
-
-    public function __construct() {
-        $this->db = PDO_DB::conectar();
-    }
+class UsuarioDAO extends BaseDAO {
 
     private function mapearDadosParaObjeto(array $dados): Usuario {
         return new Usuario(

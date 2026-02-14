@@ -62,7 +62,8 @@ class Usuario {
 
         if ($this->validaSenhaSegura()) {
             $this->senha = password_hash($this->senha, PASSWORD_DEFAULT);
-            return $dao->salvar($this);
+            $this->id = $dao->salvar($this);
+            return $this->id;
         }
         
         return -1;

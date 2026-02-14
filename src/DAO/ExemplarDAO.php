@@ -3,15 +3,8 @@
 namespace App\DAO;
 
 use App\Biblioteca\Exemplar;
-use App\Database\PDO_DB;
-use PDO;
 
-class ExemplarDAO {
-    private PDO $db;
-
-    public function __construct() {
-        $this->db = PDO_DB::conectar();
-    }
+class ExemplarDAO extends BaseDAO {
 
     private function mapearDadosParaObjeto(array $dados): Exemplar {
         return new Exemplar(
