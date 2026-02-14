@@ -5,13 +5,13 @@
     <title>Biblioteca Central</title>
     <style>
         body { background-color: #f8f9fa; }
-        .login-card { max-width: 90vw; border-radius: 15px; border: none; }
+        .card { max-width: 90vw; border-radius: 15px; border: none; }
         .hiden { display: none; }
     </style>
 </head>
 <body class="d-flex align-items-center min-vh-100">
     <main class="container d-flex justify-content-center">
-        <div class="card login-card shadow-lg p-4">
+        <div class="card shadow-lg p-4">
             <div class="card-body">
                 <form id="cadastro">
                     <div class="row mb-3">

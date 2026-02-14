@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php require_once view_path('layout/head.php'); ?>
     <title>Biblioteca Central</title>
-    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/jquery/jquery.min.js"></script>
     <style>
         body { background-color: #f8f9fa; }
         .login-card { max-width: 90vw; min-width: 400px; border-radius: 15px; border: none; }

@@ -1,3 +1,23 @@
+<?php
+use App\Biblioteca\Livro;
+$livros = Livro::listarTodos('completo');
+$tbody = '';
+foreach($livros as $livro){
+    $slug = slugificar($livro->livro);
+    $qtde = count($livro->exemplares);
+    $tbody .= "
+        <tr>
+            <td><a href='livro/{$slug}'>{$livro->livro}</a></td>
+            <td>{$livro->autor}</td>
+            <td>{$qtde}</td>
+        </tr>
+    ";
+}
+
+if(empty($tbody)) {
+    $tbody = '<tr><td colspan="3" class="text-center">Nenhum livro encontrado.</td></tr>';
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -21,21 +41,7 @@
                         </tr>
                     </thead>
                     <tbody id="livros">
-                        <?php
-                        use App\Biblioteca\Livro;
-                        $livros = Livro::listarTodos('completo');
-                        foreach($livros as $livro){
-                            $slug = slugificar($livro->livro);
-                            $qtde = count($livro->exemplares);
-                            echo "
-                                <tr>
-                                    <td><a href='livro/{$slug}'>{$livro->livro}</a></td>
-                                    <td>{$livro->autor}</td>
-                                    <td>{$qtde}</td>
-                                </tr>
-                            ";
-                        }
-                        ?>
+                        <?= $tbody ?>  
                     </tbody>
                 </table>
             </div>

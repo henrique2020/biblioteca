@@ -1,5 +1,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="/assets/local/img/favicon.ico">
 <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="/assets/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
 <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
