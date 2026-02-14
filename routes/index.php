@@ -80,7 +80,7 @@ if(str_starts_with($path, '/api/')){
         require_once "{$dir}user.php";
         exit;
     }
-    else if (str_ends_with($path, '/livro')) {
+    else if (str_contains($path, '/livro/')) {
         require_once "{$dir}/livro.php";
         exit;
     }

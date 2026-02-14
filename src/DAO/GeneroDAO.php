@@ -3,15 +3,9 @@
 namespace App\DAO;
 
 use App\Biblioteca\Genero;
-use App\Database\PDO_DB;
-use PDO;
 
-class GeneroDAO {
-    private PDO $db;
 
-    public function __construct() {
-        $this->db = PDO_DB::conectar();
-    }
+class GeneroDAO extends BaseDAO {
 
     private function mapearDadosParaObjeto(array $dados): Genero {
         return new Genero(
@@ -56,10 +50,36 @@ class GeneroDAO {
         return $stmt->execute([':id' => $id]) && $stmt->rowCount() > 0;
     }
 
+    public function vincularLivro(int $idGenero, int $idLivro): bool {
+        $sql = "INSERT INTO livro_genero (idLivro, idGenero) VALUES (:idLivro, :idGenero)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':idLivro' => $idLivro, ':idGenero' => $idGenero]);
+    }
+
+    public function desvincularLivro(int $idGenero, int $idLivro): bool {
+        $sql = "DELETE FROM livro_genero WHERE idLivro = :idLivro AND idGenero = :idGenero";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':idLivro' => $idLivro, ':idGenero' => $idGenero]) && $stmt->rowCount() > 0;
+    }
+
     public function buscarPorID(int $id): ?Genero {
         $sql = "SELECT * FROM genero WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':id' => $id]);
+        
+        $dados = $stmt->fetch();
+        
+        if (!$dados) {
+            return null;
+        }
+
+        return $this->mapearDadosParaObjeto($dados);
+    }
+
+    public function buscarPorNome(string $nome): ?Genero {
+        $sql = "SELECT * FROM genero WHERE genero = :nome";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':nome' => $nome]);
         
         $dados = $stmt->fetch();
         
@@ -83,5 +103,17 @@ class GeneroDAO {
             $generoes[] = $this->mapearDadosParaObjeto($dados);
         }
         return $generoes;
+    }
+
+    public function listarTodos(): array {
+        $sql = "SELECT * FROM genero ORDER BY genero";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        
+        $generos = [];
+        while ($dados = $stmt->fetch()) {
+            $generos[] = $this->mapearDadosParaObjeto($dados);
+        }
+        return $generos;
     }
 }

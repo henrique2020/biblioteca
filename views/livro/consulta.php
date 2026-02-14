@@ -3,26 +3,28 @@
 use App\Biblioteca\Livro;
 
 $livro = Livro::buscarPorSlug($slug, 'completo');
+$generos = "";
+$exemplares = "";
+if($livro){
+    foreach ($livro->generos as $genero) {
+        $escape = htmlspecialchars($genero->genero);
+        $generos .= "<span class='badge text-bg-primary p-2 m-2'>{$escape}</span>";
+    }
+
+    foreach ($livro->exemplares as $exemplar) {
+        $escape = htmlspecialchars($exemplar->codigo);
+        $color = $exemplar->status === 'D' ? 'success' : ($exemplar->status === 'E' ? 'warning' : 'danger');
+        $exemplares .= "
+            <tr>
+                <td>{$escape}</td>
+                <td>{$exemplar->dataAquisicao->format('d/m/Y')}</td>
+                <td><span class='badge text-bg-{$color}'>{$exemplar->status_descritivo()}</span></td>
+            </tr>
+        ";
+    }
+}
 $erro = !$livro ? "Nenhum livro encontrado através da palavra chave '{$slug}'" : null;
 $titulo = $livro ? htmlspecialchars($livro->livro) : 'Livro não encontrado';
-$generos = "";
-foreach ($livro->generos as $genero) {
-    $escape = htmlspecialchars($genero->genero);
-    $generos .= "<span class='badge text-bg-primary p-2 m-2'>{$escape}</span>";
-}
-
-$exemplares = "";
-foreach ($livro->exemplares as $exemplar) {
-    $escape = htmlspecialchars($exemplar->codigo);
-    $color = $exemplar->status === 'D' ? 'success' : ($exemplar->status === 'E' ? 'warning' : 'danger');
-    $exemplares .= "
-        <tr>
-            <td>{$escape}</td>
-            <td>{$exemplar->dataAquisicao->format('d/m/Y')}</td>
-            <td><span class='badge text-bg-{$color}'>{$exemplar->status_descritivo()}</span></td>
-        </tr>
-    ";
-}
 
 $lista_navegacao = [
     ['nome' => 'Home', 'link' => '/'],
@@ -37,7 +39,7 @@ $lista_navegacao = [
     <title><?= $titulo ?></title>
 </head>
 <body>
-    <?php require_once view_path('layout/nav.php'); ?>    
+    <?php require_once view_path('layout/nav.php'); ?>
 
     <main class="container mt-5">
         <?php if ($erro) { ?>
@@ -98,7 +100,16 @@ $lista_navegacao = [
                 </div>
             </div>
 
-            <a href="/" class="btn btn-secondary">Voltar</a>
+            <div class="row justify-content-between">
+                <div class="col">
+                    <a href="/" class="btn btn-secondary">Voltar</a>
+                </div>
+                <div class="col text-end">
+                    <a href="/livro/editar/<?= $livro->id ?>" class="col btn btn-primary"><i class="bi bi-pencil-square"></i> Editar</a>
+                    <a href="#" class="col btn btn-danger"><i class="bi bi-trash"></i> Excluir</a>
+                </div>
+            </div>
+        </div>
         <?php } ?>
     </main>
 

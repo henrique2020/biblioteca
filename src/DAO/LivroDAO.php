@@ -5,15 +5,8 @@ namespace App\DAO;
 use App\Biblioteca\Livro;
 use App\DAO\ExemplarDAO;
 use App\DAO\GeneroDAO;
-use App\Database\PDO_DB;
-use PDO;
 
-class LivroDAO {
-    private PDO $db;
-
-    public function __construct() {
-        $this->db = PDO_DB::conectar();
-    }
+class LivroDAO extends BaseDAO {
 
     private function mapearDadosParaObjeto(array $dados): Livro {
         return new Livro(
@@ -48,7 +41,7 @@ class LivroDAO {
                     ':dataLancamento' => $livro->dataLancamento->format('Y-m-d')
                 ]);
                 
-                if ($sucesso) { return (int)$this->db->lastInsertId(); }
+                if ($sucesso) { return (int) $this->db->lastInsertId(); }
                 return -1;
             }
         } catch (\Exception $e) {

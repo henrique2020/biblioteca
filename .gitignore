@@ -1,5 +1,6 @@
 logs/
 public/assets/
+!public/assets/local/**
 vendor/
 
 .env

@@ -30,7 +30,11 @@ class Livro {
 
     public function __set($property, $value) {
         if (property_exists($this, $property)) {
-            $this->$property = $value;
+            if ($property === 'dataLancamento' && is_string($value)) {
+                $this->$property = new DateTime($value);
+            } else {
+                $this->$property = $value;
+            }
         }
     }
 
@@ -46,6 +50,56 @@ class Livro {
         }
         return $this;
     }
+
+    public function cadastrar(array $generos = []): bool {
+        $dao = new LivroDAO();       
+
+        try {
+            $dao->beginTransaction();
+
+            // Salva o livro
+            $this->id = $dao->salvar($this);
+            if ($this->id === -1) {
+                throw new \Exception("Erro ao salvar o livro");
+            }
+
+            Genero::definirVinculos($this, $generos);
+            $this->generos = Genero::listarPorLivro($this->id);
+
+            // Confirma a transação
+            $dao->commit();
+            return true;
+            
+        } catch (\Exception $e) {
+            // Desfaz tudo em caso de erro
+            $dao->rollBack();
+            error_log("Erro ao cadastrar livro: {$e->getMessage()}");
+            $this->id = -1;
+            return false;
+        }
+    }
+
+    public function editar(array $generos = []): bool {
+        $dao = new LivroDAO();
+
+        try {
+            $dao->beginTransaction();
+
+            $dao->salvar($this);
+            Genero::definirVinculos($this, $generos);
+            $this->generos = Genero::listarPorLivro($this->id);
+
+            // Confirma a transação
+            $dao->commit();
+            return true;
+            
+        } catch (\Exception $e) {
+            // Desfaz tudo em caso de erro
+            $dao->rollBack();
+            error_log("Erro ao editar livro: {$e->getMessage()}");
+            return false;
+        }
+    }
     
     public static function buscarPorID(int $id, string $contexto = 'simples'): ?Livro {
         $dao = new LivroDAO();
@@ -54,7 +108,7 @@ class Livro {
         } elseif($contexto === 'completo'){
             return $dao->buscaRecursivaPorID($id);
         } else {
-            throw new \InvalidArgumentException("Contexto inválido: " . $contexto);
+            throw new \InvalidArgumentException("Contexto inválido: {$contexto}");
         }
     }
 
@@ -65,7 +119,7 @@ class Livro {
         } elseif($contexto === 'completo'){
             return $dao->buscaRecursivaPorNome($nome);
         } else {
-            throw new \InvalidArgumentException("Contexto inválido: " . $contexto);
+            throw new \InvalidArgumentException("Contexto inválido: {$contexto}");
         }
     }
 
@@ -76,7 +130,7 @@ class Livro {
         } elseif($contexto === 'completo'){
             return $dao->buscaRecursivaPorSlug($slug);
         } else {
-            throw new \InvalidArgumentException("Contexto inválido: " . $contexto);
+            throw new \InvalidArgumentException("Contexto inválido: {$contexto}");
         }
     }
 
@@ -87,7 +141,7 @@ class Livro {
         } elseif($contexto === 'completo'){
             return $dao->listaRecursiva();
         } else {
-            throw new \InvalidArgumentException("Contexto inválido: " . $contexto);
+            throw new \InvalidArgumentException("Contexto inválido: {$contexto}");
         }
     }
 }
